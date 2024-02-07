@@ -15,7 +15,7 @@ services:
     networks:
       - federation-network
     ports:
-      - 8001:8080
+      - "8181:8080"
     depends_on:
       - redis
       - books
@@ -34,7 +34,7 @@ services:
     networks:
       - federation-network
     ports:
-      - 8002:8080
+      - "8182:8080"
     depends_on:
       - redis
 
@@ -51,7 +51,7 @@ services:
     networks:
       - federation-network
     ports:
-      - 8003:8080
+      - "8183:8080"
     depends_on:
       - redis
   
