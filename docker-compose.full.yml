@@ -1,0 +1,69 @@
+services:
+  gateway:
+    container_name: gateway-api
+    image: ${DOCKER_REGISTRY-}gateway
+    environment:
+        - ASPNETCORE_ENVIRONMENT=Production
+        - GraphQL__RedisEndpoint=redis:6379
+        - GraphQL__Services__0__Name=books
+        - GraphQL__Services__0__Endpoint=http://books/graphql
+        - GraphQL__Services__1__Name=authors
+        - GraphQL__Services__1__Endpoint=http://authors/graphql
+    build:
+      context: .
+      dockerfile: src/Gateway/Dockerfile
+    networks:
+      - federation-network
+    ports:
+      - 8001:8080
+    depends_on:
+      - redis
+      - books
+      - authors
+
+  books:
+    container_name: books-api
+    image: ${DOCKER_REGISTRY-}books-api
+    environment:
+        - ASPNETCORE_ENVIRONMENT=Production
+        - GraphQL__Federation__IsEnabled=true
+        - GraphQL__Federation__RedisEndpoint=redis:6379
+    build:
+      context: .
+      dockerfile: src/Books/Dockerfile
+    networks:
+      - federation-network
+    ports:
+      - 8002:8080
+    depends_on:
+      - redis
+
+  authors:
+    container_name: authors-api
+    image: ${DOCKER_REGISTRY-}authors-api
+    environment:
+        - ASPNETCORE_ENVIRONMENT=Production
+        - GraphQL__Federation__IsEnabled=true
+        - GraphQL__Federation__RedisEndpoint=redis:6379
+    build:
+      context: .
+      dockerfile: src/Authors/Dockerfile
+    networks:
+      - federation-network
+    ports:
+      - 8003:8080
+    depends_on:
+      - redis
+  
+  redis:
+    container_name: redis-federation
+    image: redis:alpine
+    command: redis-server
+    ports:
+      - "6379:6379"
+    networks:
+      - federation-network
+
+networks:
+  federation-network:
+    driver: bridge

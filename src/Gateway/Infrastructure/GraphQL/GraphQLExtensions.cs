@@ -20,8 +20,7 @@ namespace Gateway.Infrastructure.GraphQL
                 .AddSingleton<IConnectionMultiplexer>(sp => ConnectionMultiplexer.Connect(graphQlOptions.RedisEndpoint!))
                 .AddGraphQLServer()
                 .ModifyRequestOptions(options => options.ExecutionTimeout = graphQlOptions.RequestTimeout)
-                .InitializeOnStartup()
-                .AddRemoteSchemasFromRedis(graphQlOptions.ServiceName!, sp => sp.GetRequiredService<ConnectionMultiplexer>());
+                .AddRemoteSchemasFromRedis(graphQlOptions.ServiceName!, sp => sp.GetRequiredService<IConnectionMultiplexer>());
 
             return services;
         }
