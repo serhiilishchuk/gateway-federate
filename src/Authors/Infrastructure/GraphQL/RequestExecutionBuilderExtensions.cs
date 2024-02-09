@@ -9,7 +9,7 @@ internal static class RequestExecutionBuilderExtensions
     {
         if (options.Federation.IsEnabled)
         {
-            builder.PublishSchemaDefinition(c => c
+            builder.PublishSchemaDefinition(descriptor => descriptor
                 .SetName(options.ServiceName!)
                 .PublishToRedis(options.Federation.GatewayName!, sp => sp.GetRequiredService<IConnectionMultiplexer>())
             );

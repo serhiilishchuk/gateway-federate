@@ -4,7 +4,7 @@ namespace Gateway.Infrastructure.GraphQL
 {
     internal static class GraphQLExtensions
     {
-        internal static IServiceCollection HostGraphQLFederation(this IServiceCollection services, IConfiguration configuration)
+        internal static IServiceCollection AddGraphQLFederation(this IServiceCollection services, IConfiguration configuration)
         {
             var graphQlOptions = new GraphQLOptions();
             configuration
@@ -21,6 +21,7 @@ namespace Gateway.Infrastructure.GraphQL
                 .AddGraphQLServer()
                 .ModifyRequestOptions(options => options.ExecutionTimeout = graphQlOptions.RequestTimeout)
                 .AddRemoteSchemasFromRedis(graphQlOptions.ServiceName!, sp => sp.GetRequiredService<IConnectionMultiplexer>());
+                //.RenameType("Book", "Literature",);
 
             return services;
         }

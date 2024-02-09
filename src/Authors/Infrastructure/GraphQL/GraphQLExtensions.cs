@@ -12,7 +12,9 @@ namespace Authors.Infrastructure.GraphQL
                 .Bind(graphQlOptions);
 
             services
-                .AddSingleton<IConnectionMultiplexer>(sp => ConnectionMultiplexer.Connect(graphQlOptions.Federation!.RedisEndpoint!))
+                .AddSingleton<IConnectionMultiplexer>(sp => ConnectionMultiplexer.Connect(graphQlOptions.Federation!.RedisEndpoint!));
+
+            services
                 .AddGraphQLServer()
                 .AddQueryType<Query>()
                 .ModifyRequestOptions(options => options.ExecutionTimeout = graphQlOptions.RequestTimeout)
